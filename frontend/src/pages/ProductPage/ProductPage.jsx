@@ -57,7 +57,7 @@ export default function ProductPage() {
   return (
     <div className="detail-page">
       <div className="container">
-        <Link to="/#products" className="back-link">
+        <Link to="/products" className="back-link">
           ← Back to products
         </Link>
 

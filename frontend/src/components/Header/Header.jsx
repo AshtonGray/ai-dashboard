@@ -9,8 +9,8 @@ export default function Header() {
           AI Engineering
         </Link>
         <nav className="nav-links">
-          <Link to="/#products">Products</Link>
-          <Link to="/#learning-paths">Learning Paths</Link>
+          <Link to="/products">Products</Link>
+          <Link to="/learning-paths">Learning Paths</Link>
         </nav>
       </div>
     </header>

@@ -47,6 +47,18 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  position: relative;
+}
+
+/* Very subtle dot texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle at center, rgba(0, 0, 0, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
 a {
@@ -56,6 +68,11 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 .container {

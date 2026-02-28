@@ -33,7 +33,7 @@ export default function LearningPathPage() {
   return (
     <div className="detail-page">
       <div className="container">
-        <Link to="/#learning-paths" className="back-link">
+        <Link to="/learning-paths" className="back-link">
           ← Back to learning paths
         </Link>
 
