@@ -1,0 +1,25 @@
+.state-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-pill);
+  margin-bottom: 0.75rem;
+}
+
+.state-badge.available {
+  background: var(--state-available-bg);
+  color: var(--state-available);
+}
+
+.state-badge.pilot {
+  background: var(--state-pilot-bg);
+  color: var(--state-pilot);
+}
+
+.state-badge.evaluation {
+  background: var(--state-evaluation-bg);
+  color: var(--state-evaluation);
+}

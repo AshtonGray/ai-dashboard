@@ -1,0 +1,106 @@
+/* Global: design tokens, reset, shared utilities */
+:root {
+  --bg: #f8fafc;
+  --bg-card: #ffffff;
+  --bg-hero: #ffffff;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --accent: #6366f1;
+  --accent-soft: #e0e7ff;
+  --accent-hover: #4f46e5;
+  --border: #e2e8f0;
+  --state-available: #10b981;
+  --state-available-bg: #d1fae5;
+  --state-pilot: #f59e0b;
+  --state-pilot-bg: #fef3c7;
+  --state-evaluation: #3b82f6;
+  --state-evaluation-bg: #dbeafe;
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-pill: 999px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.08);
+  --font-sans: "DM Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(ellipse 120% 80% at 0% 0%, rgba(224, 231, 255, 0.7), transparent 60%),
+    radial-gradient(ellipse 110% 75% at 100% 0%, rgba(254, 243, 235, 0.6), transparent 55%),
+    radial-gradient(ellipse 90% 60% at 0% 50%, rgba(221, 214, 254, 0.4), transparent 55%),
+    radial-gradient(ellipse 85% 55% at 100% 50%, rgba(255, 237, 213, 0.35), transparent 50%),
+    radial-gradient(ellipse 80% 50% at 50% 100%, rgba(224, 231, 255, 0.35), transparent 50%),
+    radial-gradient(ellipse 70% 45% at 100% 100%, rgba(254, 243, 235, 0.3), transparent 45%),
+    #f8fafc;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* Shared buttons (used by multiple pages) */
+.btn {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-pill);
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+  text-decoration: none;
+}
+
+.btn:hover {
+  text-decoration: none;
+  transform: scale(1.02);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+  color: #fff;
+}
+
+.btn-secondary {
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  background: var(--border);
+  border-color: var(--text-muted);
+  color: var(--text);
+}
