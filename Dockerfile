@@ -22,10 +22,10 @@ RUN npm run build
 FROM python:3.10-slim
 
 # Allow statements and log messages to immediately appear in the Knative logs
-ENV PYTHONUNBUFFERED True
+ENV PYTHONUNBUFFERED=1
 
-ENV APP_HOME /app
-ENV PORT 8080
+ENV APP_HOME=/app
+ENV PORT=8080
 WORKDIR $APP_HOME
 
 # Copy backend code (backend folder contents into APP_HOME)
@@ -36,6 +36,12 @@ COPY --from=frontend-builder /app/frontend/dist ./static
 
 # Install production dependencies
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Run as non-root for GKE / container best practices
+RUN useradd --create-home --shell /bin/bash appuser && chown -R appuser:appuser $APP_HOME
+USER appuser
+
+EXPOSE 8080
 
 # Run the web service on container startup.
 # For environments with multiple CPU cores, increase the number of workers.

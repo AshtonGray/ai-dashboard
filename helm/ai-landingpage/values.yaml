@@ -1,0 +1,53 @@
+# Default values for ai-landingpage
+# Deploy with: helm install ai-landingpage ./helm/ai-landingpage -f myvalues.yaml
+
+replicaCount: 1
+
+image:
+  repository: ai-landingpage
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8080
+
+container:
+  port: 8080
+  env:
+    PORT: "8080"
+
+probes:
+  healthPath: /api/health
+  liveness:
+    initialDelaySeconds: 10
+    periodSeconds: 10
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 5
+
+resources:
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
+  limits:
+    memory: "512Mi"
+    cpu: "500m"
+
+ingress:
+  enabled: false
+  className: "gce"
+  # For Google-managed SSL (GKE), set annotations e.g.:
+  # annotations:
+  #   networking.gke.io/managed-certificates: "ai-landingpage-cert"
+  annotations: {}
+  hosts:
+    - host: your-domain.com
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: ai-landingpage-tls
+  #    hosts:
+  #      - your-domain.com
