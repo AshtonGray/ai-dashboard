@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import StateBadge from '../StateBadge';
-import { statusToLabel } from '../../data';
+import { statusToLabel } from '../../api/client';
 import './LearningPathCard.css';
 
 function LearningLogo({ title }) {

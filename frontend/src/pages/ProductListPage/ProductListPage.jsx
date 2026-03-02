@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../../components/ProductCard';
-import { products } from '../../data';
+import { getProducts } from '../../api/client';
 import './ProductListPage.css';
 
 function matchProduct(query, product) {
@@ -15,10 +15,23 @@ function matchProduct(query, product) {
 
 export default function ProductListPage() {
   const [search, setSearch] = useState('');
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    getProducts()
+      .then((data) => { if (!cancelled) setProducts(data); })
+      .catch((err) => { if (!cancelled) setError(err.message || 'Failed to load products'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const filtered = useMemo(() => {
     return products.filter((p) => matchProduct(search, p));
-  }, [search]);
+  }, [products, search]);
 
   return (
     <div className="list-page">
@@ -42,7 +55,11 @@ export default function ProductListPage() {
             />
           </div>
         </header>
-        {filtered.length > 0 ? (
+        {loading ? (
+          <p className="list-page-empty">Loading products…</p>
+        ) : error ? (
+          <p className="list-page-empty error">{error}</p>
+        ) : filtered.length > 0 ? (
           <div className="list-page-grid">
             {filtered.map((p) => (
               <ProductCard key={p.slug} product={p} />

@@ -1,6 +1,6 @@
 import { useParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import { getProductBySlug, statusToLabel } from '../../data';
+import { useEffect, useState } from 'react';
+import { getProduct, statusToLabel } from '../../api/client';
 import StateBadge from '../../components/StateBadge';
 import './ProductPage.css';
 
@@ -30,7 +30,23 @@ function ProductLogo({ logo, name }) {
 
 export default function ProductPage() {
   const { id: slug } = useParams();
-  const product = getProductBySlug(slug);
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!slug) {
+      setLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setError(null);
+    getProduct(slug)
+      .then((data) => { if (!cancelled) setProduct(data); })
+      .catch((err) => { if (!cancelled) setError(err.message || 'Failed to load product'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [slug]);
 
   useEffect(() => {
     if (product) document.title = `${product.name} – AI Engineering`;
@@ -39,14 +55,23 @@ export default function ProductPage() {
     };
   }, [product]);
 
-  if (!product) {
+  if (loading) {
     return (
       <div className="detail-page">
         <div className="container">
-          <Link to="/#products" className="back-link">
-            ← Back to products
-          </Link>
-          <div className="page-message error">Product not found.</div>
+          <Link to="/products" className="back-link">← Back to products</Link>
+          <p className="page-message">Loading product…</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="detail-page">
+        <div className="container">
+          <Link to="/products" className="back-link">← Back to products</Link>
+          <div className="page-message error">{error || 'Product not found.'}</div>
         </div>
       </div>
     );

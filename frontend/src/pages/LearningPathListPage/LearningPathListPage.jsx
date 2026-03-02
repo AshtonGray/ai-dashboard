@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import LearningPathCard from '../../components/LearningPathCard';
-import { learnings } from '../../data';
+import { getLearnings } from '../../api/client';
 import './LearningPathListPage.css';
 
 function matchLearning(query, learning) {
@@ -15,10 +15,23 @@ function matchLearning(query, learning) {
 
 export default function LearningPathListPage() {
   const [search, setSearch] = useState('');
+  const [learnings, setLearnings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    getLearnings()
+      .then((data) => { if (!cancelled) setLearnings(data); })
+      .catch((err) => { if (!cancelled) setError(err.message || 'Failed to load learning paths'); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, []);
 
   const filtered = useMemo(() => {
     return learnings.filter((l) => matchLearning(search, l));
-  }, [search]);
+  }, [learnings, search]);
 
   return (
     <div className="list-page">
@@ -42,7 +55,11 @@ export default function LearningPathListPage() {
             />
           </div>
         </header>
-        {filtered.length > 0 ? (
+        {loading ? (
+          <p className="list-page-empty">Loading learning paths…</p>
+        ) : error ? (
+          <p className="list-page-empty error">{error}</p>
+        ) : filtered.length > 0 ? (
           <div className="list-page-grid">
             {filtered.map((l) => (
               <LearningPathCard key={l.slug} learning={l} />

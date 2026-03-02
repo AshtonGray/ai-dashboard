@@ -1,13 +1,36 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import Hero from '../../components/Hero';
 import ProductCard from '../../components/ProductCard';
 import LearningPathCard from '../../components/LearningPathCard';
-import { products, learnings } from '../../data';
+import { getProducts, getLearnings } from '../../api/client';
 import './HomePage.css';
 
 export default function HomePage() {
   const { hash } = useLocation();
+  const [products, setProducts] = useState([]);
+  const [learnings, setLearnings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    setError(null);
+    Promise.all([getProducts(), getLearnings()])
+      .then(([productsData, learningsData]) => {
+        if (!cancelled) {
+          setProducts(productsData);
+          setLearnings(learningsData);
+        }
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message || 'Failed to load offerings');
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   useEffect(() => {
     if (hash) {
@@ -16,6 +39,29 @@ export default function HomePage() {
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
   }, [hash]);
+
+  if (loading) {
+    return (
+      <>
+        <Hero />
+        <div className="container">
+          <p className="page-message">Loading offerings…</p>
+        </div>
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Hero />
+        <div className="container">
+          <p className="page-message error">{error}</p>
+          <p className="page-message-hint">Ensure the backend is running on port 5000.</p>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
