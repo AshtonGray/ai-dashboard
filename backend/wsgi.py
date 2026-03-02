@@ -1,11 +1,33 @@
 """
 Flask backend for AI Engineering offerings API.
 """
-from flask import Flask, jsonify
+import os
+from flask import Flask, jsonify, send_from_directory
 from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"])
+app = Flask(__name__, static_folder="static", static_url_path="")
+CORS(app)
+
+# Serve React app for all non-API routes (must be last route)
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve(path):
+    # Don't serve static files for API routes
+    if path.startswith("api"):
+        return jsonify({"error": "Not found"}), 404
+
+    # Static folder may not exist when running backend alone (e.g. local dev)
+    if not os.path.isdir(app.static_folder):
+        return jsonify({"error": "Not found"}), 404
+
+    # Serve static files if they exist
+    if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+
+    # Serve index.html for all other routes (React Router)
+    return send_from_directory(app.static_folder, "index.html")
+
+
 
 PRODUCTS = [
     {
@@ -154,6 +176,7 @@ def get_learning_path(slug):
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok"})
+
 
 
 if __name__ == "__main__":
