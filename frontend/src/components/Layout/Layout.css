@@ -1,3 +1,8 @@
 .layout-main {
   min-height: 60vh;
 }
+
+.layout-content {
+  position: relative;
+  z-index: 1;
+}
